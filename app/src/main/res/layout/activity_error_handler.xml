@@ -1,0 +1,49 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:gravity="center_horizontal"
+    tools:context="nanodegree.rahall.popularmovies2.activities.ErrorHandlerActivity">
+
+    <TextView
+        android:id="@+id/error_textview"
+        android:text="@string/error_string"
+        android:layout_width="wrap_content"
+        android:textColor="@color/red"
+        android:textSize="22sp"
+        android:layout_marginBottom="30dp"
+        android:layout_height="wrap_content" />
+    <Button
+        android:id="@+id/button_try_again"
+
+        android:layout_height="40dp"
+        android:layout_width="200dp"
+        android:layout_below="@+id/error_textview"
+        android:background="@color/LinkTextColor"
+        android:textColor="#ffffff"
+        android:onClick="tryAgain"
+        android:layout_marginBottom="30dp"
+        android:layout_centerHorizontal="true"
+        android:text="@string/try_again"
+        />
+
+    <Button
+        android:id="@+id/button_load_favorites"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_below="@+id/button_try_again"
+        android:background="@color/LinkTextColor"
+        android:textColor="#ffffff"
+        android:layout_marginBottom="30dp"
+        android:onClick="loadFavorites"
+
+        android:layout_centerHorizontal="true"
+
+        android:text="@string/load_favorites"
+        />
+
+
+</RelativeLayout>

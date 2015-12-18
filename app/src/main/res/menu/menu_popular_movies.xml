@@ -1,0 +1,62 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".PopularMovies">
+
+        <item
+            android:title="@string/display_movies_by"
+            />
+    <item android:id="@+id/send_trailer"
+        android:icon="@android:drawable/ic_menu_send"
+        android:title="@string/share_trailer"
+        android:background="@drawable/touch_background"
+        android:actionProviderClass="android.widget.ShareActionProvider"
+        app:showAsAction="ifRoom"/>
+    <group
+        android:id="@+id/sort_method"
+
+        android:checkableBehavior="single">
+    <item
+        android:id="@+id/action_sort_by_popularity"
+
+        android:title="@string/most_popular"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_sort_by_rating"
+
+        android:title="@string/rating"
+        app:showAsAction="never"
+        />
+
+        <item
+            android:id="@+id/action_myfavorites"
+
+            android:title="@string/favorites"
+            app:showAsAction="never"
+            />
+</group>
+
+        <item
+            android:title="@string/networking_method"
+            />
+    <group
+        android:id="@+id/network_method"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/use_volley"
+
+            android:title="@string/volley"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/use_asyntask"
+
+            android:title="@string/asynctask"
+            app:showAsAction="never"
+            />
+
+        </group>
+
+
+
+
+</menu>

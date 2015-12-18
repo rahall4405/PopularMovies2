@@ -1,0 +1,21 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/movie_detail_top"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context="nanodegree.rahall.popularmovies2.activities.MovieDetails"
+    xmlns:tools="http://schemas.android.com/tools">
+    <fragment
+
+        android:id="@+id/movies_detail_fragment"
+        android:name="nanodegree.rahall.popularmovies2.fragments.MovieDetailsFragment"
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_height="match_parent"
+
+        />
+
+
+</RelativeLayout>
+

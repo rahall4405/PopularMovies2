@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">Popular Movies</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_movie_detail">Movie Detail</string>
+    <string name="release_date">release_date</string>
+    <string name="poster_image">poster_image</string>
+    <string name="title">title</string>
+    <string name="vote_average">vote_average</string>
+    <string name="vote_count">vote_count</string>
+    <string name="movie_length">movie_length</string>
+    <string name="id">id</string>
+    <string name="movies">movies</string>
+    <string name="movie_detail">movie detail</string>
+    <string name="overview">overview</string>
+    <string name="minutes">\u0020minutes</string>
+    <string name="release_date_string">Release Date:\u0020</string>
+    <string name="average_rating">Average Rating:\u0020</string>
+    <string name="detail_textview_weight">4</string>
+
+    <string name="detail_textview_weight_sum">20</string>
+    <string name="detail_textview_layout_width">match_parent</string>
+    <string name="movie_revenue">Revenue:\u0020</string>
+    <string name="reviews">Reviews:\u0020</string>
+    <string name="reviews_title">Reviews</string>
+    <string name="most_popular">Sort By Popularity</string>
+    <string name="rating">Sort By Rating</string>
+    <string name="favorites">View My Favorites</string>
+    <string name="volley">Use Volley</string>
+    <string name="asynctask">Use AsyncTask</string>
+    <string name="networking_method">Networking Method</string>
+    <string name="display_movies_by">Display Movies</string>
+    <string name="popularity">popularity</string>
+    <string name="ratings">ratings</string>
+    <string name="method_volley">volley</string>
+    <string name="method_asynctask">asynctask</string>
+    <string name="title_activity_error_handler">ErrorHandlerActivity</string>
+    <string name="error_string">A Network error has occurred.  Check your network connection and push the TRY AGAIN button below.  If you are offline press the LOAD FAVORITES Button.</string>
+    <string name="try_again">Try Again!</string>
+    <string name="load_favorites">LOAD_FAVORITES</string>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="position">postion</string>
+    <string name="add_favorite">added to favorites</string>
+    <string name="delete_favorite">deleted from favorites</string>
+    <string name="share_trailer">Share Trailer</string>
+    <string name="trailer_for">Trailer for </string>
+    <string name="trailers">Trailers</string>
+
+
+</resources>

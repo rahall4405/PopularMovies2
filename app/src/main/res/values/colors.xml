@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="DetailTextColor">#a9a9a9</color>
+    <color name="LinkTextColor">#2222EE</color>
+    <color name="BGColor">#111111</color>
+    <color name="red">#ee2222</color>
+
+    <color name="colorEffect">#b6b6b6</color>
+</resources>
