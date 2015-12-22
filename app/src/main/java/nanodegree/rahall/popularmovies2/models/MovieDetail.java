@@ -1,16 +1,28 @@
 package nanodegree.rahall.popularmovies2.models;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by rahall on 9/6/15.
  */
-public class MovieDetail implements Serializable {
+public class MovieDetail implements Parcelable {
     private String revenue;
     private String runtime;
     private String homepage;
     private String release_date;
 
+    public MovieDetail() {
+
+
+    }
+    MovieDetail(Parcel in) {
+        revenue = in.readString();
+        runtime = in.readString();
+        homepage = in.readString();
+        release_date = in.readString();
+
+    }
 
     public String getRelease_date() {
         return release_date;
@@ -45,4 +57,28 @@ public class MovieDetail implements Serializable {
     }
 
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(revenue);
+        dest.writeString(runtime);
+        dest.writeString(homepage);
+        dest.writeString(release_date);
+    }
+
+    public static final Parcelable.Creator<MovieDetail> CREATOR = new Parcelable.Creator<MovieDetail>() {
+        public MovieDetail createFromParcel(Parcel in) {
+            return new MovieDetail(in);
+        }
+
+        public MovieDetail[] newArray(int size) {
+            return new MovieDetail[size];
+        }
+
+
+    };
 }

@@ -18,19 +18,21 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import nanodegree.rahall.popularmovies2.R;
 import nanodegree.rahall.popularmovies2.MovieApplication;
+import nanodegree.rahall.popularmovies2.R;
 import nanodegree.rahall.popularmovies2.activities.MovieDetails;
+import nanodegree.rahall.popularmovies2.activities.PopularMovies;
 import nanodegree.rahall.popularmovies2.customviews.ReviewView;
 import nanodegree.rahall.popularmovies2.customviews.TrailorView;
 import nanodegree.rahall.popularmovies2.databasemanager.DatabaseManager;
 import nanodegree.rahall.popularmovies2.models.MovieDetail;
-import nanodegree.rahall.popularmovies2.models.Reviews;
-import nanodegree.rahall.popularmovies2.models.Videos;
+import nanodegree.rahall.popularmovies2.models.Review;
+import nanodegree.rahall.popularmovies2.models.Video;
 import nanodegree.rahall.popularmovies2.utilities.CustomIntents;
 import nanodegree.rahall.popularmovies2.utilities.DelegateNetworkAccess;
 import nanodegree.rahall.popularmovies2.utilities.HttpHelper;
@@ -73,9 +75,9 @@ public class MovieDetailsFragment extends Fragment {
     Context mContext;
 
 
-
-    private Videos mVideos;
-    private Reviews mReviews;
+    private MovieDetail mMovieDetail;
+    private ArrayList<Video> mVideos;
+    private  ArrayList<Review> mReviews;
     private Bundle mBundle;
 
     DatabaseManager dm;
@@ -100,7 +102,7 @@ public void clickFavorite(View view) {
         Utilities.deleteImageFile(mBundle.getString("poster_image"));
     } else {
         message= mMovieTitle.getText() + " " + getResources().getString(R.string.add_favorite);
-        dm.addEntry(mContext,mBundle,mReviews,mVideos);
+        dm.addEntry(mContext,mMovieDetail,mBundle,mReviews,mVideos);
         Utilities.downloadImageFile(mContext, mBundle.getString("poster_image"));
     }
     if(Utilities.isTablet(mContext)&& MovieApplication.getInstance().getSortPreference().equals(getString(R.string.favorites))) {
@@ -168,6 +170,13 @@ public void clickFavorite(View view) {
         return movieDetail;
     }
 
+    public void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putBundle("mbundle", mBundle);
+
+        //ut.putParcelable("movies", movies);
+    }
+
 
     public void dispPick(Bundle b) {
 
@@ -222,37 +231,43 @@ public void clickFavorite(View view) {
 
             if (CustomIntents.DOWNLOAD_DETAIL_COMPLETE.equals(action)) {
 
-                MovieDetail movieDetail = MovieApplication.getInstance().getMovieDetail();
-                mMovieLength.setText(movieDetail.getRuntime() + getString(R.string.minutes));
-                long revenueLong = Long.parseLong(movieDetail.getRevenue());
+                mMovieDetail = intent.getParcelableExtra("nanodegree.rahall.popularmovies2.models.MovieDetail");
+                mMovieLength.setText(mMovieDetail.getRuntime() + getString(R.string.minutes));
+                long revenueLong = Long.parseLong(mMovieDetail.getRevenue());
                 NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
                 String revenueNumberString = numberFormat.format(revenueLong);
                 revenueNumberString = revenueNumberString.substring(0, revenueNumberString.lastIndexOf("."));
                 String revenue = getString(R.string.movie_revenue) + revenueNumberString;
-                mVideos = MovieApplication.getInstance().getVideos();
-                mReviews = MovieApplication.getInstance().getReviews();
+                mReviews  = intent.<Review>getParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Review");
+                mVideos = intent.<Video>getParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Video");
+
                 ViewGroup viewTrailor = (LinearLayout) getActivity().findViewById(R.id.trailor_linear_layout);
                 viewTrailor.removeAllViewsInLayout();
-                for (int i = 0; i < mVideos.getSize(); i++) {
-                    TrailorView trailorView = new TrailorView(getActivity(), mVideos.getVideo(i).getKey(),
-                            mVideos.getVideo(i).getName());
+                for (int i = 0; i < mVideos.size(); i++) {
+                    TrailorView trailorView = new TrailorView(getActivity(), mVideos.get(i).getKey(),
+                            mVideos.get(i).getName());
                     viewTrailor.addView(trailorView);
                 }
                 ViewGroup viewReview = (LinearLayout) getActivity().findViewById(R.id.reviewLinearLayout);
                 viewReview.removeAllViewsInLayout();
-                for (int i = 0; i < mReviews.getSize(); i++) {
-                    ReviewView reviewView = new ReviewView(getActivity(), mReviews.getReview(i).getAuthor(),
-                            mReviews.getReview(i).getContent());
+                for (int i = 0; i < mReviews.size(); i++) {
+                    ReviewView reviewView = new ReviewView(getActivity(), mReviews.get(i).getAuthor(),
+                            mReviews.get(i).getContent());
                     viewReview.addView(reviewView);
                 }
-                if(mReviews.getSize() == 0) {
+                if(mReviews.size() == 0) {
                     mReviewTitle.setVisibility(View.GONE);
                 } else {
                     mReviewTitle.setVisibility(View.VISIBLE);
                 }
 
                 mRevenue.setText(revenue);
-                mHomePage.setText(movieDetail.getHomePage());
+                mHomePage.setText(mMovieDetail.getHomePage());
+                if(Utilities.isTablet(mContext)) {
+                    ((PopularMovies) getActivity()).setRequiredLinks(mMovieDetail.getHomePage(), mVideos.get(0).getKey());
+                } else {
+                    ((MovieDetails) getActivity()).setRequiredLinks(mMovieDetail.getHomePage(),mVideos.get(0).getKey());
+                }
 
 
             }

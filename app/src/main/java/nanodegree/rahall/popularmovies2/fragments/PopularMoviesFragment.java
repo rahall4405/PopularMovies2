@@ -14,14 +14,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import nanodegree.rahall.popularmovies2.R;
 import nanodegree.rahall.popularmovies2.MovieApplication;
+import nanodegree.rahall.popularmovies2.R;
 import nanodegree.rahall.popularmovies2.activities.ErrorHandlerActivity;
 import nanodegree.rahall.popularmovies2.activities.MovieDetails;
 import nanodegree.rahall.popularmovies2.adaptors.MovieAdapter;
+import nanodegree.rahall.popularmovies2.models.Movie;
+import nanodegree.rahall.popularmovies2.models.Movies;
 import nanodegree.rahall.popularmovies2.utilities.CustomIntents;
 import nanodegree.rahall.popularmovies2.utilities.Utilities;
 
@@ -46,6 +49,7 @@ public class PopularMoviesFragment extends Fragment {
 
     RecyclerView mMovieRecylcerView;
     MovieAdapter mMovieAdapter;
+    Movies movies;
 
     private OnFragmentInteractionListener myListener;
 
@@ -67,6 +71,7 @@ public class PopularMoviesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override
@@ -78,7 +83,7 @@ public class PopularMoviesFragment extends Fragment {
                 CustomIntents.DOWNLOAD_COMPLETE));
         getActivity().registerReceiver(receiver_error, new IntentFilter(
                 CustomIntents.DOWNLOAD_ERROR));
-        Utilities.getMovies(getActivity());
+
 
 
     }
@@ -94,21 +99,12 @@ public class PopularMoviesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-
+        if(savedInstanceState != null) {
+            movies =  savedInstanceState.getParcelable("movies");
+        }
 
         View movieView = inflater.inflate(R.layout.fragment_popular_movies, container, false);
         mMovieRecylcerView = (RecyclerView) movieView.findViewById(R.id.movie_image_recyclerview);
-
-
-
-        Utilities.getMovies(getActivity());
-
-        return movieView;
-
-    }
-
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         mMovieAdapter = new MovieAdapter(getActivity());
         mMovieRecylcerView.setAdapter(mMovieAdapter);
         mMovieRecylcerView.setHasFixedSize(true);
@@ -138,6 +134,38 @@ public class PopularMoviesFragment extends Fragment {
                 }
             }
         });
+        if(movies == null) {
+            Utilities.getMovies(getActivity());
+        } else {
+            mMovieAdapter.setMovies(movies);
+            mMovieAdapter.notifyDataSetChanged();
+            mMovieAdapter.notifyItemRangeInserted(0, movies.getSize()- 1);
+        }
+
+
+
+
+        return movieView;
+
+    }
+    @Override
+    public void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putParcelable("movies", movies);
+    }
+   /* @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        try {
+           movies =  savedInstanceState.getParcelable("movies");
+
+        } catch (Exception e) {
+
+        }
+    }*/
+
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
 
     }
@@ -178,13 +206,15 @@ public class PopularMoviesFragment extends Fragment {
             String action = intent.getAction();
 
             if (CustomIntents.DOWNLOAD_COMPLETE.equals(action)) {
+                ArrayList<Movie> movieArrayList = intent.<Movie>getParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Movie");
+                movies = new Movies();
+                movies.setMovies(movieArrayList);
 
-
-                mMovieAdapter.setMovies(MovieApplication.getInstance().getMovies());
+                mMovieAdapter.setMovies(movies);
 
                 mMovieAdapter.notifyDataSetChanged();
-                mMovieAdapter.notifyItemRangeInserted(0, MovieApplication.getInstance().getMovies().getSize() - 1);
-                if (Utilities.isTablet(getActivity()) && MovieApplication.getInstance().getMovies().getSize() >0) {
+                mMovieAdapter.notifyItemRangeInserted(0, movies.getSize()- 1);
+                if (Utilities.isTablet(getActivity()) && movies.getSize() >0) {
                     Timer myTimer = new Timer();
                     myTimer.schedule(new TimerTask() {
                         @Override

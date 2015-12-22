@@ -1,11 +1,12 @@
 package nanodegree.rahall.popularmovies2.models;
 
-import java.io.Serializable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 /**
  * Created by rahall on 11/28/15.
  */
-public class Video implements Serializable {
+public class Video implements Parcelable {
 
     private String id;
 
@@ -14,7 +15,17 @@ public class Video implements Serializable {
     private String name;
     private String site;
     private String type;
+    public Video() {
 
+    }
+    public Video(Parcel in) {
+        id = in.readString();
+        iso_639_1 = in.readString();
+        key = in.readString();
+        name = in.readString();
+        site = in.readString();
+        type = in.readString();
+    }
 
 
     public String getId() {
@@ -64,4 +75,34 @@ public class Video implements Serializable {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(iso_639_1);
+        dest.writeString(key);
+        dest.writeString(name);
+        dest.writeString(site);
+        dest.writeString(type);
+
+
+    }
+
+    public static final Parcelable.Creator<Video> CREATOR = new Parcelable.Creator<Video>() {
+        public Video createFromParcel(Parcel in) {
+            return new Video(in);
+        }
+
+        public Video[] newArray(int size) {
+            return new Video[size];
+        }
+
+
+    };
+
 }

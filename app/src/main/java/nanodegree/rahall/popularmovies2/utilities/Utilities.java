@@ -56,13 +56,13 @@ public class Utilities {
 
 
     public static void getMovies(Context context) {
-        DelegateNetworkAccess.getMovies(context.getApplicationContext(), MovieApplication.getInstance().getSortPreference());
+        DelegateNetworkAccess.getMovies(context, MovieApplication.getInstance().getSortPreference());
 
     }
 
-    public static void gotoLink(Context context) {
-        MovieDetail movieDetail = MovieApplication.getInstance().getMovieDetail();
-        String url = movieDetail.getHomePage();
+    public static void gotoLink(Context context,String url) {
+
+
         Uri webPageUri = Uri.parse(url);
 
         Intent intent = new Intent(Intent.ACTION_VIEW, webPageUri);
@@ -101,9 +101,9 @@ public class Utilities {
 
     public static void downloadImageFile(Context context, String file) {
 
-         String urlString = HttpHelper.getImageSize185HttpRequest(file);
-         DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
-         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlString));
+        String urlString = HttpHelper.getImageSize185HttpRequest(file);
+        DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
+        DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlString));
         File pathDir = new File(MovieApplication.getApplicationDirectory() + "/image_files");
         pathDir.mkdirs();
         int postionLastSlash = urlString.lastIndexOf('/');
@@ -120,12 +120,10 @@ public class Utilities {
         imageFile.delete();
     }
 
-    public static void sendShareIntent(Bundle b, Context context) {
+    public static void sendShareIntent(Bundle b, Context context,String videoString) {
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
-        Video video = new Video();
         String urlString = "https://www.youtube.com/watch?v=";
-        video = MovieApplication.getInstance().getVideos().getVideo(0);
-        String videoLink = urlString + video.getKey();
+        String videoLink = urlString + videoString;
         sharingIntent.setType("text/plain");
 
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, context.getString(R.string.trailer_for) + b.getString("title"));

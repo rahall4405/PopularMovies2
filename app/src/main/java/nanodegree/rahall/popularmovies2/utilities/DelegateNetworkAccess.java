@@ -5,8 +5,15 @@ import android.content.Intent;
 
 import com.android.volley.toolbox.JsonObjectRequest;
 
-import nanodegree.rahall.popularmovies2.R;
+import java.util.ArrayList;
+
 import nanodegree.rahall.popularmovies2.MovieApplication;
+import nanodegree.rahall.popularmovies2.R;
+import nanodegree.rahall.popularmovies2.models.Movie;
+import nanodegree.rahall.popularmovies2.models.MovieDetail;
+import nanodegree.rahall.popularmovies2.models.Movies;
+import nanodegree.rahall.popularmovies2.models.Reviews;
+import nanodegree.rahall.popularmovies2.models.Videos;
 
 /**
  * Created by rahall on 9/13/15.
@@ -65,13 +72,19 @@ public class DelegateNetworkAccess {
     }
 
 
-    public static void sendDownloadCompleteMovies(Context context) {
+    public static void sendDownloadCompleteMovies(Context context, Movies movies) {
         Intent intent = new Intent();
+        ArrayList<Movie> movieArrayList = movies.getMovies();
+
+        intent.putParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Movie", movieArrayList);
         intent.setAction(CustomIntents.DOWNLOAD_COMPLETE);
-        context.sendBroadcast(intent);
+       context.sendBroadcast(intent);
     }
-    public static void sendDownloadCompleteMovieDetail(Context context) {
+    public static void sendDownloadCompleteMovieDetail(Context context,MovieDetail movieDetail,Reviews reviews, Videos videos) {
         Intent intent = new Intent();
+        intent.putExtra("nanodegree.rahall.popularmovies2.models.MovieDetail",movieDetail);
+        intent.putParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Review", reviews.getReviews());
+        intent.putParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Video", videos.getVideos());
         intent.setAction(CustomIntents.DOWNLOAD_DETAIL_COMPLETE);
         context.sendBroadcast(intent);
     }

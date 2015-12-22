@@ -14,6 +14,8 @@ public class MovieDetails extends AppCompatActivity {
 
     Context mContext;
     MenuItem mSendTrailor;
+    String siteLink;
+    String videoLink;
 
      static  Bundle mExtras = null;
 
@@ -73,7 +75,8 @@ public class MovieDetails extends AppCompatActivity {
         }
         if(id == R.id.send_trailer) {
 
-            Utilities.sendShareIntent(getExtras(),mContext);
+
+            Utilities.sendShareIntent(getExtras(),mContext,videoLink);
         }
 
         return super.onOptionsItemSelected(item);
@@ -82,7 +85,12 @@ public class MovieDetails extends AppCompatActivity {
 
 
     public void gotoLink(View view) {
-        Utilities.gotoLink(mContext);
+        Utilities.gotoLink(mContext,siteLink);
+    }
+
+    public void setRequiredLinks(String siteLink, String videoLink) {
+        this.siteLink = siteLink;
+        this.videoLink = videoLink;
     }
 
 

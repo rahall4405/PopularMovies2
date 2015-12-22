@@ -9,24 +9,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.facebook.stetho.Stetho;
 
-import nanodegree.rahall.popularmovies2.models.MovieDetail;
-import nanodegree.rahall.popularmovies2.models.Movies;
-import nanodegree.rahall.popularmovies2.models.Reviews;
-import nanodegree.rahall.popularmovies2.models.Videos;
-
 /**
  * Created by rahall on 8/30/15.
  */
 public class MovieApplication  extends Application{
     private static MovieApplication mInstance;
     private static Context mContext;
-    private static Movies mMovies;
-    private static MovieDetail mMovieDetail;
 
-
-
-    private static Videos videos;
-    private static Reviews reviews;
 
 
     private RequestQueue mRequestQueue;
@@ -56,13 +45,6 @@ public class MovieApplication  extends Application{
 
     }
 
-    public  Movies getMovies() {
-        return mMovies;
-    }
-
-    public void setMovies(Movies mMovies) {
-        MovieApplication.mMovies = mMovies;
-    }
 
 
     public  String getSortPreference() {
@@ -90,13 +72,7 @@ public class MovieApplication  extends Application{
         request.setTag(TAG);
         getRequestQueue().add(request);
     }
-    public static MovieDetail getMovieDetail() {
-        return mMovieDetail;
-    }
 
-    public static void setMovieDetail(MovieDetail mMovieDetail) {
-        MovieApplication.mMovieDetail = mMovieDetail;
-    }
 
     public void setRequestType(String requestType) {
         SharedPreferences.Editor editor = this.getSharedPreferences(SHARED_PREFERENCES, Context.MODE_PRIVATE).edit();
@@ -125,21 +101,7 @@ public class MovieApplication  extends Application{
 
     }
 
-    public static Videos getVideos() {
-        return videos;
-    }
 
-    public static void setVideos(Videos videos) {
-        MovieApplication.videos = videos;
-    }
-
-    public static Reviews getReviews() {
-        return reviews;
-    }
-
-    public static void setReviews(Reviews reviews) {
-        MovieApplication.reviews = reviews;
-    }
     public static String getApplicationDirectory() {
         String destination;
         try {

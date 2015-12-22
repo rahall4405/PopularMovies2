@@ -25,6 +25,8 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
     Context mContext;
     MenuItem mSendTrailor;
     Bundle b;
+    String siteLink;
+    String videoLink;
 
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -179,7 +181,7 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
                 case R.id.send_trailer:
             {
 
-                Utilities.sendShareIntent(b,mContext);
+                Utilities.sendShareIntent(b,mContext,videoLink);
 
 
 
@@ -208,7 +210,7 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
     }
 
     public void gotoLink(View view) {
-        Utilities.gotoLink(mContext);
+        Utilities.gotoLink(mContext,siteLink);
     }
 
     @Override
@@ -224,4 +226,9 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
 
 
     }
+    public void setRequiredLinks(String siteLink, String videoLink) {
+        this.siteLink = siteLink;
+        this.videoLink = videoLink;
+    }
+
 }

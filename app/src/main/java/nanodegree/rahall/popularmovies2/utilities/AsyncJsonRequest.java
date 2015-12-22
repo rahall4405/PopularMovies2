@@ -18,7 +18,6 @@ import java.net.URL;
 import nanodegree.rahall.popularmovies2.MovieApplication;
 import nanodegree.rahall.popularmovies2.R;
 import nanodegree.rahall.popularmovies2.databasemanager.GetMoviesWithDB;
-import nanodegree.rahall.popularmovies2.models.MovieDetail;
 import nanodegree.rahall.popularmovies2.models.Movies;
 
 /**
@@ -93,15 +92,13 @@ AsyncJsonRequest(String type,Context context) {
                     movieString = buffer.toString();
                     JSONObject jsonObject = new JSONObject(movieString);
                     if (jsonObject.toString().contains("revenue")) {
-                        MovieDetail movieDetail = new MovieDetail();
-                        movieDetail = Conversion.convertJsonObjectToMovieDetailModel(jsonObject);
-                        MovieApplication.getInstance().setMovieDetail(movieDetail);
-                        DelegateNetworkAccess.sendDownloadCompleteMovieDetail(mContext);
+                        Conversion.convertJsonObjectToMovieDetailModel(jsonObject,mContext);
+
                     } else {
                         JSONArray moviesJsonArray = jsonObject.getJSONArray("results");
                         Movies movies = Conversion.convertJsonArrayToMovieModelArray(moviesJsonArray);
-                        MovieApplication.getInstance().setMovies(movies);
-                        DelegateNetworkAccess.sendDownloadCompleteMovies(mContext);
+
+                        DelegateNetworkAccess.sendDownloadCompleteMovies(mContext,movies);
                     }
 
                 }

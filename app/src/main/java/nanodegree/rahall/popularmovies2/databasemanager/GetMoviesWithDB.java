@@ -15,10 +15,10 @@ public class GetMoviesWithDB {
         //DatabaseManager dm = new DatabaseManager(context);
         Movies movies = new Movies();
         movies = Utilities.getMoviesCR(context);
-       // MovieApplication.getInstance().getMovies().clearAll();
-        MovieApplication.getInstance().setMovies(movies);
 
-        DelegateNetworkAccess.sendDownloadCompleteMovies(context);
+
+
+        DelegateNetworkAccess.sendDownloadCompleteMovies(context,movies);
 
 
     }

@@ -7,8 +7,9 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Bundle;
 
+import java.util.ArrayList;
+
 import nanodegree.rahall.popularmovies2.R;
-import nanodegree.rahall.popularmovies2.MovieApplication;
 import nanodegree.rahall.popularmovies2.models.Movie;
 import nanodegree.rahall.popularmovies2.models.MovieDetail;
 import nanodegree.rahall.popularmovies2.models.MovieDetails;
@@ -127,8 +128,8 @@ public class DatabaseManager {
 
     }
 
-    public void addEntry(Context context, Bundle b, Reviews reviews, Videos videos) {
-        MovieDetail movieDetail = MovieApplication.getInstance().getMovieDetail();
+    public void addEntry(Context context, MovieDetail movieDetail, Bundle b, ArrayList<Review> reviews, ArrayList<Video> videos) {
+
         ContentValues values = new ContentValues();
 
         values.put(MOVIE_ID, b.getString(context.getString(R.string.id)));
@@ -146,11 +147,11 @@ public class DatabaseManager {
         db.insert(MOVIES_TABLE_NAME, null, values);
 
         if (reviews != null) {
-            for (int i = 0; i < reviews.getSize(); i++) {
+            for (int i = 0; i < reviews.size(); i++) {
                 ContentValues valuesReviews = new ContentValues();
-                valuesReviews.put(REVIEW_ID, reviews.getReview(i).getId());
-                valuesReviews.put(REVIEW_AUTHOR, reviews.getReview(i).getAuthor());
-                valuesReviews.put(REVIEW_CONTENT, reviews.getReview(i).getContent());
+                valuesReviews.put(REVIEW_ID, reviews.get(i).getId());
+                valuesReviews.put(REVIEW_AUTHOR, reviews.get(i).getAuthor());
+                valuesReviews.put(REVIEW_CONTENT, reviews.get(i).getContent());
                 valuesReviews.put(REVIEW_MOVIE_ID, b.getString(context.getString(R.string.id)));
                 try {
                     db.insert(REVIEWS_TABLE_NAME, null, valuesReviews);
@@ -163,11 +164,11 @@ public class DatabaseManager {
         }
 
         if (videos != null) {
-            for (int i = 0; i < videos.getSize(); i++) {
+            for (int i = 0; i < videos.size(); i++) {
                 ContentValues valuesVideos = new ContentValues();
-                valuesVideos.put(VIDEO_ID, videos.getVideo(i).getId());
-                valuesVideos.put(VIDEO_KEY, videos.getVideo(i).getKey());
-                valuesVideos.put(VIDEO_NAME, videos.getVideo(i).getName());
+                valuesVideos.put(VIDEO_ID, videos.get(i).getId());
+                valuesVideos.put(VIDEO_KEY, videos.get(i).getKey());
+                valuesVideos.put(VIDEO_NAME, videos.get(i).getName());
                 valuesVideos.put(VIDEO_MOVIE_ID, b.getString(context.getString(R.string.id)));
                 try {
                     db.insert(VIDEOS_TABLE_NAME, null, valuesVideos);

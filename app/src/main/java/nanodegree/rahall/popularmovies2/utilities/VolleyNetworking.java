@@ -1,7 +1,6 @@
 package nanodegree.rahall.popularmovies2.utilities;
 
 import android.content.Context;
-import android.content.Intent;
 
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -58,17 +57,17 @@ public class VolleyNetworking {
 
                     if (response.toString().contains("revenue")) {
                         MovieDetail movieDetail = new MovieDetail();
-                        movieDetail = Conversion.convertJsonObjectToMovieDetailModel(response);
-                        MovieApplication.getInstance().setMovieDetail(movieDetail);
-                        DelegateNetworkAccess.sendDownloadCompleteMovieDetail(mContext);
+                        Conversion.convertJsonObjectToMovieDetailModel(response,mContext);
+
+                        //DelegateNetworkAccess.sendDownloadCompleteMovieDetail(mContext,movieDetail);
 
 
                     } else {
 
                         JSONArray moviesJsonArray = response.getJSONArray("results");
                         Movies movies = Conversion.convertJsonArrayToMovieModelArray(moviesJsonArray);
-                        MovieApplication.getInstance().setMovies(movies);
-                        DelegateNetworkAccess.sendDownloadCompleteMovies(mContext);
+                        //MovieApplication.getInstance().setMovies(movies);
+                        DelegateNetworkAccess.sendDownloadCompleteMovies(mContext,movies);
 
                     }
 
@@ -106,11 +105,9 @@ public class VolleyNetworking {
                         try {
 
                             Movies movies = Conversion.convertJsonArrayToMovieModelArray(response);
-                            MovieApplication.getInstance().setMovies(movies);
-                            Intent intent = new Intent();
+                            DelegateNetworkAccess.sendDownloadCompleteMovies(context,movies);
 
-                            intent.setAction(CustomIntents.DOWNLOAD_COMPLETE);
-                            context.sendBroadcast(intent);
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

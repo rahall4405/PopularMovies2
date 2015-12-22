@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import nanodegree.rahall.popularmovies2.MovieApplication;
 import nanodegree.rahall.popularmovies2.databasemanager.DatabaseManager;
 import nanodegree.rahall.popularmovies2.models.Movie;
 import nanodegree.rahall.popularmovies2.models.MovieDetail;
@@ -40,7 +39,7 @@ public class Conversion {
 
     }
 
-    public static MovieDetail convertJsonObjectToMovieDetailModel(JSONObject jsonMovieDetail) throws org.json.JSONException {
+    public static void convertJsonObjectToMovieDetailModel(JSONObject jsonMovieDetail, Context context) throws org.json.JSONException {
 
         GsonBuilder gsonBuilder = new GsonBuilder();
         Gson gson = gsonBuilder.create();
@@ -53,7 +52,7 @@ public class Conversion {
             Video video = gson.fromJson(String.valueOf(jsonVideo), Video.class);
             videos.addVideo(video);
         }
-        MovieApplication.getInstance().setVideos(videos);
+
         JSONObject jsonObjectReviews = jsonMovieDetail.getJSONObject("reviews");
         JSONArray jsonArrayReviews = jsonObjectReviews.getJSONArray("results");
         Reviews reviews = new Reviews();
@@ -62,33 +61,23 @@ public class Conversion {
             Review review = gson.fromJson(String.valueOf(jsonReview), Review.class);
             reviews.addReview(review);
         }
-        MovieApplication.getInstance().setReviews(reviews);
+
 
         MovieDetail movieDetail = gson.fromJson(String.valueOf(jsonMovieDetail),MovieDetail.class);
-        return movieDetail;
+        DelegateNetworkAccess.sendDownloadCompleteMovieDetail(context,movieDetail,reviews,videos);
+
 
     }
     public static void convertDBtoMovieDetailModel(Context context, String id) {
 
         DatabaseManager dm = new DatabaseManager(context);
         MovieDetail movieDetail = null;
-        //movieDetail = dm.getMovieDetailFromDb(id);
-        // changed to content resolver
         movieDetail =Utilities.getMovieDetail(context,id);
         Videos videos = new Videos();
-        //videos = dm.getMovieVideosFromDb(id);
-        // changed to content resolver
         videos = Utilities.getVideos(context,id);
         Reviews reviews = new Reviews();
-        //reviews = dm.getMovieReviewsFromDb(id);
-        // changed to content resolver
         reviews = Utilities.getReviews(context,id);
-        MovieApplication.getInstance().setVideos(videos);
-        MovieApplication.getInstance().setReviews(reviews);
-
-
-        MovieApplication.getInstance().setMovieDetail(movieDetail);
-        DelegateNetworkAccess.sendDownloadCompleteMovieDetail(context);
+        DelegateNetworkAccess.sendDownloadCompleteMovieDetail(context,movieDetail,reviews,videos);
     }
 
 
