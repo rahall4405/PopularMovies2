@@ -230,7 +230,7 @@ public class MovieDetailsFragment extends Fragment {
                     .into(mMovieImage);
 
         }
-        if (mMovieDetail == null || newSelection || MovieApplication.getInstance().getSortPreference().equals(mContext.getString(R.string.favorites))) {
+        if (mMovieDetail == null || newSelection || (MovieApplication.getInstance().getSortPreference().equals(mContext.getString(R.string.favorites))) &&(!Utilities.isTablet(mContext))) {
             DelegateNetworkAccess.getMovies(mContext.getApplicationContext(), MovieApplication.getInstance().getSortPreference(), id);
         } else {
             setDetails();

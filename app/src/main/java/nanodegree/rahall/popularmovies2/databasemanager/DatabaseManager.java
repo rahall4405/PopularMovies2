@@ -273,7 +273,7 @@ public class DatabaseManager {
             if (!cursor.isAfterLast()) {
                 do {
                     Video video = new Video();
-                    video = setVideo(cursor);
+                    video = Utilities.setVideo(cursor);
                     videos.addVideo(video);
 
 
@@ -314,7 +314,7 @@ public class DatabaseManager {
             if (!cursor.isAfterLast()) {
                 do {
                     Review review = new Review();
-                    review = setReview(cursor);
+                    review = Utilities.setReview(cursor);
                     reviews.addReview(review);
 
 
@@ -386,7 +386,7 @@ public class DatabaseManager {
         if (!cursor.isAfterLast()) {
             do {
                 Review review = new Review();
-                review = setReview(cursor);
+                review = Utilities.setReview(cursor);
                 reviews.addReview(review);
 
 
@@ -406,7 +406,7 @@ public class DatabaseManager {
         if (!cursor.isAfterLast()) {
             do {
                 Video video = new Video();
-                video = setVideo(cursor);
+                video = Utilities.setVideo(cursor);
                 videos.addVideo(video);
 
 
@@ -438,39 +438,6 @@ public class DatabaseManager {
         return movie;
     }
 
-  /*  public MovieDetail setMovieDetail(Cursor cursor) {
-        MovieDetail movieDetail = new MovieDetail();
-        movieDetail.setHomePage(cursor.getString(cursor
-                .getColumnIndexOrThrow(HOMEPAGE)));
-        movieDetail.setRevenue(cursor.getString(cursor
-                .getColumnIndexOrThrow(REVENUE)));
-        movieDetail.setRuntime(cursor.getString(cursor
-                .getColumnIndexOrThrow(RUNTIME)));
-        return movieDetail;
-    }*/
-
-    public Review setReview(Cursor cursor) {
-        Review review = new Review();
-        review.setId(cursor.getString(cursor
-                .getColumnIndexOrThrow(REVIEW_ID)));
-        review.setAuthor(cursor.getString(cursor
-                .getColumnIndexOrThrow(REVIEW_AUTHOR)));
-        review.setContent(cursor.getString(cursor
-                .getColumnIndexOrThrow(REVIEW_CONTENT)));
-        return review;
-    }
-
-    public Video setVideo(Cursor cursor) {
-        Video video = new Video();
-        video.setId(cursor.getString(cursor
-                .getColumnIndexOrThrow(VIDEO_ID)));
-        video.setKey(cursor.getString(cursor
-                .getColumnIndexOrThrow(VIDEO_KEY)));
-        video.setName(cursor.getString(cursor
-                .getColumnIndexOrThrow(VIDEO_NAME)));
-        return video;
-
-    }
 
 
 }
