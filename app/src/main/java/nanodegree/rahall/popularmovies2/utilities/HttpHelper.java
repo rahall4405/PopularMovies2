@@ -4,7 +4,7 @@ package nanodegree.rahall.popularmovies2.utilities;
  * Created by rahall on 8/23/15.
  */
 public class HttpHelper {
-    private static final String key = "008a6ada949696651640b0b92d5c506c";
+    private static final String key = "";
     private static final String apiKey = "api_key=";
     private static final String baseJsonDiscoverRequest = "http://api.themoviedb.org/3/discover/movie?";
     private static final String popularitySort = "sort_by=popularity.desc&";
