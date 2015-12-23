@@ -104,15 +104,15 @@ public class MovieApplication  extends Application{
 
     public static String getApplicationDirectory() {
         String destination;
-        try {
-            destination = getAppContext().getExternalFilesDir(null).toString();
-        } catch(Exception e)
-        {
-            e.printStackTrace();
-            destination = MovieApplication.getAppContext().getFilesDir().toString();
+
+        boolean isSdPresent = android.os.Environment.getExternalStorageState().equals(android.os.Environment.MEDIA_MOUNTED);
+        if(isSdPresent) {
+
+            return getAppContext().getExternalFilesDir(null).toString();
+        } else {
+            return null;
         }
 
 
-        return destination;
     }
 }

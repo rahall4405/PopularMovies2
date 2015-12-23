@@ -49,6 +49,12 @@ AsyncJsonRequest(String type,Context context) {
     @Override
     protected Void doInBackground(String... params) {
         if (MovieApplication.getInstance().getSortPreference().equals(mContext.getString(R.string.favorites))) {
+
+            try {
+                Thread.sleep(50l);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             GetMoviesWithDB getMoviesWithDB = new GetMoviesWithDB(mContext);
         } else {
             String urlString;

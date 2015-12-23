@@ -63,12 +63,16 @@ public class MovieDetailsFragment extends Fragment {
     @Bind(R.id.synopsys)
     TextView mSynopsys;
     @Bind(R.id.image_favorite_layout)
-            LinearLayout mImageFavoriteLayout;
+    LinearLayout mImageFavoriteLayout;
     @Bind(R.id.image_favorite)
-            ImageView mImageFavorite;
+    ImageView mImageFavorite;
 
     @Bind(R.id.reviews_title_linear_layout)
     LinearLayout mReviewTitle;
+    @Bind(R.id.reviewLinearLayout)
+    LinearLayout mReviewLayout;
+    @Bind(R.id.trailer_linear_layout)
+    LinearLayout mTrailerLayout;
 
     boolean isFavorite = false;
 
@@ -77,41 +81,42 @@ public class MovieDetailsFragment extends Fragment {
 
     private MovieDetail mMovieDetail;
     private ArrayList<Video> mVideos;
-    private  ArrayList<Review> mReviews;
+    private ArrayList<Review> mReviews;
     private Bundle mBundle;
 
     DatabaseManager dm;
 
-@OnClick(R.id.image_favorite)
-public void clickFavorite(View view) {
-    if (isFavorite) {
-       mImageFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_black_36dp));
-        isFavorite = false;
+    @OnClick(R.id.image_favorite)
+    public void clickFavorite(View view) {
+        if (isFavorite) {
+            mImageFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_black_36dp));
+            isFavorite = false;
 
-    } else {
-        mImageFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_green_36dp));
-        isFavorite = true;
+        } else {
+            mImageFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_green_36dp));
+            isFavorite = true;
 
+        }
+        String message;
+
+
+        if (!isFavorite) {
+            message = mMovieTitle.getText() + " " + getResources().getString(R.string.delete_favorite);
+            dm.deleteEntry(mBundle);
+            Utilities.deleteImageFile(mBundle.getString("poster_image"));
+        } else {
+            message = mMovieTitle.getText() + " " + getResources().getString(R.string.add_favorite);
+            dm.addEntry(mContext, mMovieDetail, mBundle, mReviews, mVideos);
+            Utilities.downloadImageFile(mContext, mBundle.getString("poster_image"));
+        }
+        if (Utilities.isTablet(mContext) && MovieApplication.getInstance().getSortPreference().equals(getString(R.string.favorites))) {
+            Utilities.getMovies(getActivity());
+        }
+
+        Snackbar.make(view, message, Snackbar.LENGTH_LONG)
+                .show();
     }
-    String message;
 
-
-    if (!isFavorite)  {
-        message= mMovieTitle.getText() + " " + getResources().getString(R.string.delete_favorite);
-        dm.deleteEntry(mBundle);
-        Utilities.deleteImageFile(mBundle.getString("poster_image"));
-    } else {
-        message= mMovieTitle.getText() + " " + getResources().getString(R.string.add_favorite);
-        dm.addEntry(mContext,mMovieDetail,mBundle,mReviews,mVideos);
-        Utilities.downloadImageFile(mContext, mBundle.getString("poster_image"));
-    }
-    if(Utilities.isTablet(mContext)&& MovieApplication.getInstance().getSortPreference().equals(getString(R.string.favorites))) {
-        Utilities.getMovies(getActivity());
-    }
-
-    Snackbar.make(view, message, Snackbar.LENGTH_LONG)
-            .show();
-}
     public static MovieDetailsFragment newInstance() {
         MovieDetailsFragment fragment = new MovieDetailsFragment();
 
@@ -132,7 +137,7 @@ public void clickFavorite(View view) {
     @Override
     public void onResume() {
         super.onResume();
-        mContext = getActivity();
+
         mContext.registerReceiver(receiver, new IntentFilter(
                 CustomIntents.DOWNLOAD_DETAIL_COMPLETE));
 
@@ -142,7 +147,7 @@ public void clickFavorite(View view) {
         if (!Utilities.isTablet(getActivity())) {
 
             if (mBundle != null) {
-                setDisplay(mBundle);
+                setDisplay(mBundle, false);
             }
         }
     }
@@ -161,10 +166,21 @@ public void clickFavorite(View view) {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        mContext = getActivity();
         View movieDetail = inflater.inflate(R.layout.fragment_movie_details, container, false);
 
         ButterKnife.bind(this, movieDetail);
-        mBundle = MovieDetails.getExtras();
+
+        if (savedInstanceState != null) {
+            mBundle = savedInstanceState.getBundle("mbundle");
+            mMovieDetail = savedInstanceState.getParcelable("movie_detail");
+            mReviews = savedInstanceState.getParcelableArrayList("reviews");
+            mVideos = savedInstanceState.getParcelableArrayList("videos");
+            setDisplay(mBundle, false);
+
+        } else {
+            mBundle = MovieDetails.getExtras();
+        }
 
 
         return movieDetail;
@@ -173,6 +189,10 @@ public void clickFavorite(View view) {
     public void onSaveInstanceState(Bundle out) {
         super.onSaveInstanceState(out);
         out.putBundle("mbundle", mBundle);
+        out.putParcelable("movie_detail", mMovieDetail);
+        out.putParcelableArrayList("reviews", mReviews);
+        out.putParcelableArrayList("videos", mVideos);
+
 
         //ut.putParcelable("movies", movies);
     }
@@ -180,13 +200,14 @@ public void clickFavorite(View view) {
 
     public void dispPick(Bundle b) {
 
-        setDisplay(b);
+        setDisplay(b, true);
         mBundle = b;
         checkIfFavorite(b);
 
+
     }
 
-    public void setDisplay(Bundle b) {
+    public void setDisplay(Bundle b, boolean newSelection) {
         mMovieTitle.setText(b.getString(mContext.getString(R.string.title)));
         mReleaseDate.setText(getString(R.string.release_date_string) + b.getString(mContext.getString(R.string.release_date), ""));
         mVoteAverage.setText(getString(R.string.average_rating) + b.getString(mContext.getString(R.string.vote_average), ""));
@@ -194,7 +215,7 @@ public void clickFavorite(View view) {
         mSynopsys.setText(b.getString(mContext.getString(R.string.overview), ""));
 
         String id = b.getString(mContext.getString(R.string.id), "");
-        if (MovieApplication.getInstance().getSortPreference().equals(mContext.getString(R.string.favorites))) {
+        if (MovieApplication.getInstance().getSortPreference().equals(mContext.getString(R.string.favorites)) && MovieApplication.getApplicationDirectory() != null) {
             File file = new File(MovieApplication.getApplicationDirectory() + "/image_files" + b.getString(mContext.getString(R.string.poster_image)));
             Picasso.with(mContext)
                     .load(file)
@@ -209,7 +230,12 @@ public void clickFavorite(View view) {
                     .into(mMovieImage);
 
         }
-        DelegateNetworkAccess.getMovies(mContext.getApplicationContext(), MovieApplication.getInstance().getSortPreference(), id);
+        if (mMovieDetail == null || newSelection || MovieApplication.getInstance().getSortPreference().equals(mContext.getString(R.string.favorites))) {
+            DelegateNetworkAccess.getMovies(mContext.getApplicationContext(), MovieApplication.getInstance().getSortPreference(), id);
+        } else {
+            setDetails();
+        }
+
         checkIfFavorite(b);
 
     }
@@ -227,47 +253,14 @@ public void clickFavorite(View view) {
         public void onReceive(Context context, Intent intent) {
 
 
-                String action = intent.getAction();
+            String action = intent.getAction();
 
             if (CustomIntents.DOWNLOAD_DETAIL_COMPLETE.equals(action)) {
 
                 mMovieDetail = intent.getParcelableExtra("nanodegree.rahall.popularmovies2.models.MovieDetail");
-                mMovieLength.setText(mMovieDetail.getRuntime() + getString(R.string.minutes));
-                long revenueLong = Long.parseLong(mMovieDetail.getRevenue());
-                NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
-                String revenueNumberString = numberFormat.format(revenueLong);
-                revenueNumberString = revenueNumberString.substring(0, revenueNumberString.lastIndexOf("."));
-                String revenue = getString(R.string.movie_revenue) + revenueNumberString;
-                mReviews  = intent.<Review>getParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Review");
+                mReviews = intent.<Review>getParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Review");
                 mVideos = intent.<Video>getParcelableArrayListExtra("nanodegree.rahall.popularmovies2.models.Video");
-
-                ViewGroup viewTrailor = (LinearLayout) getActivity().findViewById(R.id.trailor_linear_layout);
-                viewTrailor.removeAllViewsInLayout();
-                for (int i = 0; i < mVideos.size(); i++) {
-                    TrailorView trailorView = new TrailorView(getActivity(), mVideos.get(i).getKey(),
-                            mVideos.get(i).getName());
-                    viewTrailor.addView(trailorView);
-                }
-                ViewGroup viewReview = (LinearLayout) getActivity().findViewById(R.id.reviewLinearLayout);
-                viewReview.removeAllViewsInLayout();
-                for (int i = 0; i < mReviews.size(); i++) {
-                    ReviewView reviewView = new ReviewView(getActivity(), mReviews.get(i).getAuthor(),
-                            mReviews.get(i).getContent());
-                    viewReview.addView(reviewView);
-                }
-                if(mReviews.size() == 0) {
-                    mReviewTitle.setVisibility(View.GONE);
-                } else {
-                    mReviewTitle.setVisibility(View.VISIBLE);
-                }
-
-                mRevenue.setText(revenue);
-                mHomePage.setText(mMovieDetail.getHomePage());
-                if(Utilities.isTablet(mContext)) {
-                    ((PopularMovies) getActivity()).setRequiredLinks(mMovieDetail.getHomePage(), mVideos.get(0).getKey());
-                } else {
-                    ((MovieDetails) getActivity()).setRequiredLinks(mMovieDetail.getHomePage(),mVideos.get(0).getKey());
-                }
+                setDetails();
 
 
             }
@@ -294,7 +287,7 @@ public void clickFavorite(View view) {
 
     public void checkIfFavorite(Bundle b) {
         dm = new DatabaseManager(getActivity());
-        if(dm.getMovieFromDb(b.getString("id")) != null) {
+        if (dm.getMovieFromDb(b.getString("id")) != null) {
             isFavorite = true;
             mImageFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_green_36dp));
 
@@ -302,6 +295,46 @@ public void clickFavorite(View view) {
         } else {
             isFavorite = false;
             mImageFavorite.setImageDrawable(getResources().getDrawable(R.drawable.ic_star_black_36dp));
+        }
+    }
+
+    public void setDetails() {
+        mMovieLength.setText(mMovieDetail.getRuntime() + getString(R.string.minutes));
+        long revenueLong = Long.parseLong(mMovieDetail.getRevenue());
+        NumberFormat numberFormat = NumberFormat.getCurrencyInstance();
+        String revenueNumberString = numberFormat.format(revenueLong);
+        revenueNumberString = revenueNumberString.substring(0, revenueNumberString.lastIndexOf("."));
+        String revenue = getString(R.string.movie_revenue) + revenueNumberString;
+
+
+        //ViewGroup viewTrailer = (LinearLayout) getActivity().findViewById(R.id.trailor_linear_layout);
+        mTrailerLayout.removeAllViewsInLayout();
+        for (int i = 0; i < mVideos.size(); i++) {
+            TrailorView trailorView = new TrailorView(getActivity(), mVideos.get(i).getKey(),
+                    mVideos.get(i).getName());
+            mTrailerLayout.addView(trailorView);
+        }
+        //ViewGroup viewReview = (LinearLayout) getActivity().findViewById(R.id.reviewLinearLayout);
+        mReviewLayout.removeAllViewsInLayout();
+        for (int i = 0; i < mReviews.size(); i++) {
+            ReviewView reviewView = new ReviewView(getActivity(), mReviews.get(i).getAuthor(),
+                    mReviews.get(i).getContent());
+            mReviewLayout.addView(reviewView);
+        }
+        if (mReviews.size() == 0) {
+            mReviewTitle.setVisibility(View.GONE);
+        } else {
+            mReviewTitle.setVisibility(View.VISIBLE);
+        }
+
+        mRevenue.setText(revenue);
+        mHomePage.setText(mMovieDetail.getHomePage());
+        if (Utilities.isTablet(mContext)) {
+            if (mVideos.size() > 0) {
+                ((PopularMovies) getActivity()).setRequiredLinks(mMovieDetail.getHomePage(), mVideos.get(0).getKey());
+            }
+        } else {
+            ((MovieDetails) getActivity()).setRequiredLinks(mMovieDetail.getHomePage(), mVideos.get(0).getKey());
         }
     }
 

@@ -104,20 +104,24 @@ public class Utilities {
         String urlString = HttpHelper.getImageSize185HttpRequest(file);
         DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
         DownloadManager.Request request = new DownloadManager.Request(Uri.parse(urlString));
-        File pathDir = new File(MovieApplication.getApplicationDirectory() + "/image_files");
-        pathDir.mkdirs();
-        int postionLastSlash = urlString.lastIndexOf('/');
-        int postitionfileType = urlString.length() - 3;
-        String fileExtension = urlString.substring(postitionfileType, urlString.length());
-        String fileName= urlString.substring(postionLastSlash, urlString.length());
-        String outputFile = "/" + "/image_files" + fileName;
-        request.setDestinationInExternalFilesDir(context, "", outputFile);
-        long enqueue = dm.enqueue(request);
+        if (MovieApplication.getApplicationDirectory() != null) {
+            File pathDir = new File(MovieApplication.getApplicationDirectory() + "/image_files");
+            pathDir.mkdirs();
+            int postionLastSlash = urlString.lastIndexOf('/');
+            int postitionfileType = urlString.length() - 3;
+            String fileExtension = urlString.substring(postitionfileType, urlString.length());
+            String fileName = urlString.substring(postionLastSlash, urlString.length());
+            String outputFile = "/" + "/image_files" + fileName;
+            request.setDestinationInExternalFilesDir(context, "", outputFile);
+            long enqueue = dm.enqueue(request);
+        }
     }
 
     public static void deleteImageFile(String file) {
-        File imageFile =  new File(MovieApplication.getApplicationDirectory() + "/image_files" + file);
-        imageFile.delete();
+        if(MovieApplication.getApplicationDirectory() != null) {
+            File imageFile = new File(MovieApplication.getApplicationDirectory() + "/image_files" + file);
+            imageFile.delete();
+        }
     }
 
     public static void sendShareIntent(Bundle b, Context context,String videoString) {

@@ -83,6 +83,9 @@ public class PopularMoviesFragment extends Fragment {
                 CustomIntents.DOWNLOAD_COMPLETE));
         getActivity().registerReceiver(receiver_error, new IntentFilter(
                 CustomIntents.DOWNLOAD_ERROR));
+        if(MovieApplication.getInstance().getSortPreference().equals(getActivity().getString(R.string.favorites))) {
+            Utilities.getMovies(getActivity());
+        }
 
 
 
@@ -135,6 +138,7 @@ public class PopularMoviesFragment extends Fragment {
             }
         });
         if(movies == null) {
+
             Utilities.getMovies(getActivity());
         } else {
             mMovieAdapter.setMovies(movies);

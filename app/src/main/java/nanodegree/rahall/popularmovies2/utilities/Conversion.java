@@ -8,7 +8,6 @@ import com.google.gson.GsonBuilder;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import nanodegree.rahall.popularmovies2.databasemanager.DatabaseManager;
 import nanodegree.rahall.popularmovies2.models.Movie;
 import nanodegree.rahall.popularmovies2.models.MovieDetail;
 import nanodegree.rahall.popularmovies2.models.Movies;
@@ -70,7 +69,7 @@ public class Conversion {
     }
     public static void convertDBtoMovieDetailModel(Context context, String id) {
 
-        DatabaseManager dm = new DatabaseManager(context);
+       // DatabaseManager dm = new DatabaseManager(context);
         MovieDetail movieDetail = null;
         movieDetail =Utilities.getMovieDetail(context,id);
         Videos videos = new Videos();

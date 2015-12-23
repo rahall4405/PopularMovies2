@@ -206,7 +206,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/trailor_linear_layout"
+            android:id="@+id/trailer_linear_layout"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
@@ -221,7 +221,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="15dp"
-            android:layout_below="@+id/trailor_linear_layout"
+            android:layout_below="@+id/trailer_linear_layout"
             android:orientation="vertical">
             <TextView
                 android:id="@+id/review_title"

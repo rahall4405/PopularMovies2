@@ -35,7 +35,6 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
     private GoogleApiClient client;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,6 +60,19 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle out) {
+        super.onSaveInstanceState(out);
+        out.putBundle("b", b);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        b = savedInstanceState.getBundle("b");
+
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -178,15 +190,14 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
                     }
                 }
                 return true;
-                case R.id.send_trailer:
-            {
+            case R.id.send_trailer: {
+                if(videoLink != null) {
 
-                Utilities.sendShareIntent(b,mContext,videoLink);
-
-
+                    Utilities.sendShareIntent(b, mContext, videoLink);
+                }
 
             }
-                return true;
+            return true;
 
 
             default:
@@ -196,8 +207,6 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
 
 
     }
-
-
 
 
     @Override
@@ -210,7 +219,7 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
     }
 
     public void gotoLink(View view) {
-        Utilities.gotoLink(mContext,siteLink);
+        Utilities.gotoLink(mContext, siteLink);
     }
 
     @Override
@@ -226,6 +235,7 @@ public class PopularMovies extends AppCompatActivity implements PopularMoviesFra
 
 
     }
+
     public void setRequiredLinks(String siteLink, String videoLink) {
         this.siteLink = siteLink;
         this.videoLink = videoLink;
